@@ -66,4 +66,8 @@ if(POLYCPP_WINSTON_BUILD_TESTS)
     add_executable(test_transport tests/test_transport.cpp)
     target_link_libraries(test_transport PRIVATE polycpp_winston GTest::gtest_main)
     gtest_discover_tests(test_transport)
+
+    add_executable(test_format_builtins tests/test_format_builtins.cpp)
+    target_link_libraries(test_format_builtins PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_format_builtins)
 endif()
