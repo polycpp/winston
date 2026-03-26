@@ -78,4 +78,20 @@ if(POLYCPP_WINSTON_BUILD_TESTS)
     add_executable(test_logger tests/test_logger.cpp)
     target_link_libraries(test_logger PRIVATE polycpp_winston GTest::gtest_main)
     gtest_discover_tests(test_logger)
+
+    add_executable(test_stream_transport tests/test_stream_transport.cpp)
+    target_link_libraries(test_stream_transport PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_stream_transport)
+
+    add_executable(test_container tests/test_container.cpp)
+    target_link_libraries(test_container PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_container)
+
+    add_executable(test_exception_handler tests/test_exception_handler.cpp)
+    target_link_libraries(test_exception_handler PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_exception_handler)
+
+    add_executable(test_default_logger tests/test_default_logger.cpp)
+    target_link_libraries(test_default_logger PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_default_logger)
 endif()
