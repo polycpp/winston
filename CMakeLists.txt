@@ -46,4 +46,24 @@ if(POLYCPP_WINSTON_BUILD_TESTS)
     target_link_libraries(test_winston PRIVATE polycpp_winston GTest::gtest_main)
     include(GoogleTest)
     gtest_discover_tests(test_winston)
+
+    add_executable(test_log_info tests/test_log_info.cpp)
+    target_link_libraries(test_log_info PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_log_info)
+
+    add_executable(test_level_config tests/test_level_config.cpp)
+    target_link_libraries(test_level_config PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_level_config)
+
+    add_executable(test_format tests/test_format.cpp)
+    target_link_libraries(test_format PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_format)
+
+    add_executable(test_colorizer tests/test_colorizer.cpp)
+    target_link_libraries(test_colorizer PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_colorizer)
+
+    add_executable(test_transport tests/test_transport.cpp)
+    target_link_libraries(test_transport PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_transport)
 endif()

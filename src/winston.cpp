@@ -1,17 +1,18 @@
 /// @file winston.cpp
 /// @brief Compiled translation unit for polycpp/winston.
+///
+/// Contains static data that cannot be in header-only inline code:
+/// - Colorizer global color registry and mutex
 
 #include <polycpp/winston/winston.hpp>
+#include <polycpp/winston/colorizer.hpp>
 
-// Placeholder -- static data (Colorizer registry, etc.) will live here.
-// Needed so the library has at least one compiled TU for the linker.
 namespace polycpp {
 namespace winston {
-namespace detail {
 
-// Force at least one symbol into the compiled library.
-static const int kLibraryInitialized = 1;
+// Colorizer static members
+std::map<std::string, std::string> Colorizer::allColors_;
+std::mutex Colorizer::mutex_;
 
-} // namespace detail
 } // namespace winston
 } // namespace polycpp
