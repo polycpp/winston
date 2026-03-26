@@ -78,4 +78,8 @@ if(POLYCPP_WINSTON_BUILD_TESTS)
     add_executable(test_logger tests/test_logger.cpp)
     target_link_libraries(test_logger PRIVATE polycpp_winston GTest::gtest_main)
     gtest_discover_tests(test_logger)
+
+    add_executable(test_file_transport tests/test_file_transport.cpp)
+    target_link_libraries(test_file_transport PRIVATE polycpp_winston GTest::gtest_main)
+    gtest_discover_tests(test_file_transport)
 endif()
