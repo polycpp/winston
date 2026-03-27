@@ -127,9 +127,11 @@ inline Logger& Logger::add(std::shared_ptr<Transport> transport) {
     // Set the transport's level config
     transport->setLevels(&levels_);
 
-    // Wire up error event forwarding
+    // Wire up error event forwarding (extract the first arg to avoid double-wrapping)
     transport->on("error", [this](const std::vector<std::any>& args) {
-        this->emit("error", args);
+        if (!args.empty()) {
+            this->emit("error", args[0]);
+        }
     });
     auto listenerId = transport->lastListenerId();
     errorListenerIds_[transport.get()] = listenerId;
@@ -176,6 +178,7 @@ inline void Logger::close() {
 
 inline void Logger::configure(const LoggerOptions& options) {
     clear();
+    profilers_.clear();
     level_ = options.level;
     levels_ = options.levels;
     format_ = options.format;

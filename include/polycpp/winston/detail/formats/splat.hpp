@@ -64,6 +64,14 @@ inline std::string runtimeFormat(const std::string& fmt,
                 ++i;
                 break;
             case 'd':
+                if (arg.isNumber()) {
+                    result += polycpp::Number::toString(arg.asNumber());
+                } else {
+                    result += "NaN";
+                }
+                ++nextArg;
+                ++i;
+                break;
             case 'i':
                 if (arg.isNumber()) {
                     result += polycpp::Number::toString(

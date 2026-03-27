@@ -13,6 +13,7 @@ inline Container::Container(LoggerOptions defaults)
 
 inline std::shared_ptr<Logger> Container::get(const std::string& id,
                                                 const LoggerOptions& opts) {
+    std::lock_guard<std::mutex> lock(mutex_);
     // Return existing logger if present
     auto it = loggers_.find(id);
     if (it != loggers_.end()) {
@@ -60,14 +61,21 @@ inline std::shared_ptr<Logger> Container::add(const std::string& id,
 }
 
 inline bool Container::has(const std::string& id) const {
+    std::lock_guard<std::mutex> lock(mutex_);
     return loggers_.count(id) > 0;
 }
 
 inline void Container::close(const std::string& id) {
-    auto it = loggers_.find(id);
-    if (it != loggers_.end()) {
-        auto logger = it->second;
-        loggers_.erase(it);
+    std::shared_ptr<Logger> logger;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = loggers_.find(id);
+        if (it != loggers_.end()) {
+            logger = it->second;
+            loggers_.erase(it);
+        }
+    }
+    if (logger) {
         logger->close();
     }
 }
@@ -75,11 +83,14 @@ inline void Container::close(const std::string& id) {
 inline void Container::close() {
     // Collect all loggers first (close() may trigger auto-removal via events)
     std::vector<std::shared_ptr<Logger>> all;
-    all.reserve(loggers_.size());
-    for (auto& [id, logger] : loggers_) {
-        all.push_back(logger);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        all.reserve(loggers_.size());
+        for (auto& [id, logger] : loggers_) {
+            all.push_back(logger);
+        }
+        loggers_.clear();
     }
-    loggers_.clear();
     for (auto& logger : all) {
         logger->close();
     }

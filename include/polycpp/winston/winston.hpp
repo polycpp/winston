@@ -20,6 +20,7 @@
 #include <polycpp/winston/child_logger.hpp>
 #include <polycpp/winston/console_transport.hpp>
 #include <polycpp/winston/stream_transport.hpp>
+#include <polycpp/winston/file_transport.hpp>
 #include <polycpp/winston/container.hpp>
 #include <polycpp/winston/exception_handler.hpp>
 

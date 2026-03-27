@@ -42,6 +42,9 @@ public:
     /// @param logger Reference to the Logger to log exceptions to.
     explicit ExceptionHandler(Logger& logger);
 
+    /// @brief Destructor uninstalls the exception handler if active.
+    ~ExceptionHandler();
+
     /// @brief Install the uncaught exception handler.
     ///
     /// Optionally adds extra transports to the logger before installing.

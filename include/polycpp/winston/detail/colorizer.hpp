@@ -35,9 +35,8 @@ inline std::string Colorizer::colorize(const std::string& level,
         colorStr = it->second;
     }
 
-    // Split space-separated styles and apply each one (nested).
-    // e.g., "bold red" -> styleText("red", styleText("bold", text))
-    // Apply left-to-right: first style is innermost.
+    // Split space-separated styles and apply them all at once via the
+    // vector overload of styleText which applies from right to left (outermost first).
     std::vector<std::string> styles;
     std::istringstream iss(colorStr);
     std::string style;
@@ -45,11 +44,7 @@ inline std::string Colorizer::colorize(const std::string& level,
         styles.push_back(style);
     }
 
-    std::string result = text;
-    for (const auto& s : styles) {
-        result = polycpp::util::styleText(s, result);
-    }
-    return result;
+    return polycpp::util::styleText(styles, text);
 }
 
 inline std::string Colorizer::strip(const std::string& str) {

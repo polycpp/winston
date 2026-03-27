@@ -4,6 +4,7 @@
 /// @brief Ms format -- adds elapsed time since last log call.
 
 #include <polycpp/winston/format.hpp>
+#include <mutex>
 
 namespace polycpp {
 namespace winston {
@@ -27,6 +28,7 @@ public:
 
 private:
     double lastTimestamp_;
+    mutable std::mutex mutex_;
 };
 
 /// @brief Factory function for ms format.

@@ -47,6 +47,7 @@ inline FileTransport::FileTransport(FileTransportOptions options)
 }
 
 inline FileTransport::~FileTransport() {
+    std::lock_guard<std::mutex> lock(mutex_);
     closeFile_();
 }
 
@@ -136,8 +137,12 @@ inline void FileTransport::rotateStandard_() {
 }
 
 inline void FileTransport::rotateTailable_() {
-    // Shift existing rotated files up by 1
-    for (int i = created_; i >= 2; --i) {
+    // Shift existing rotated files up by 1, capped by maxFiles to avoid
+    // iterating over indices that were already cleaned up
+    int maxIdx = options_.maxFiles.has_value()
+        ? std::min(created_, options_.maxFiles.value())
+        : created_;
+    for (int i = maxIdx; i >= 2; --i) {
         std::string src = rotatedFilename_(i - 1);
         std::string dst = rotatedFilename_(i);
         if (options_.zippedArchive) {
@@ -176,8 +181,12 @@ inline void FileTransport::compressFile_(const std::string& sourcePath) {
 }
 
 inline void FileTransport::cleanupOldFiles_() {
+    // After each rotation only one file is ever in excess. Delete at most
+    // a small range above maxFiles to avoid an unbounded O(created_) scan.
     int maxFiles = *options_.maxFiles;
-    for (int i = maxFiles + 1; i <= created_; ++i) {
+    int start = maxFiles + 1;
+    int end = std::min(created_, start + 100);
+    for (int i = start; i <= end; ++i) {
         std::string path = rotatedFilename_(i);
         if (options_.zippedArchive) {
             std::string gzPath = path + ".gz";

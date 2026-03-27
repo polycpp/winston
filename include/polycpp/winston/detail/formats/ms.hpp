@@ -45,6 +45,7 @@ inline MsFormat::MsFormat()
     : lastTimestamp_(polycpp::Date::now()) {}
 
 inline std::optional<LogInfo> MsFormat::transform(LogInfo info) {
+    std::lock_guard<std::mutex> lock(mutex_);
     double now = polycpp::Date::now();
     double elapsed = now - lastTimestamp_;
     lastTimestamp_ = now;

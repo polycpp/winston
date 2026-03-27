@@ -26,6 +26,7 @@
 // Transports
 #include <polycpp/winston/console_transport.hpp>
 #include <polycpp/winston/stream_transport.hpp>
+#include <polycpp/winston/file_transport.hpp>
 
 // Extras
 #include <polycpp/winston/container.hpp>

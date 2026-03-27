@@ -17,6 +17,10 @@ namespace winston {
 inline ExceptionHandler::ExceptionHandler(Logger& logger)
     : logger_(logger) {}
 
+inline ExceptionHandler::~ExceptionHandler() {
+    unhandle();
+}
+
 inline void ExceptionHandler::handle(
     const std::vector<std::shared_ptr<Transport>>& transports) {
     // Add any additional transports to the logger
@@ -36,6 +40,11 @@ inline void ExceptionHandler::handle(
 
 inline void ExceptionHandler::unhandle() {
     if (installed_) {
+        // NOTE: polycpp::process::on() returns void and there is no targeted
+        // removeListener for process events. This removes ALL uncaughtException
+        // listeners, not just the one installed by this handler. If other code
+        // registers uncaughtException handlers on the process, they will also
+        // be removed. This is a known limitation of the polycpp process API.
         polycpp::process::removeAllListeners("uncaughtException");
         installed_ = false;
     }
@@ -65,7 +74,7 @@ inline LogInfo ExceptionHandler::getAllInfo(const std::exception& err) {
     info.metadata["exception"] = JsonValue(true);
 
     // Date
-    info.metadata["date"] = JsonValue(polycpp::Date().toISOString());
+    info.metadata["date"] = JsonValue(polycpp::Date(polycpp::Date::now()).toISOString());
 
     // Process info
     info.metadata["process"] = JsonValue(getProcessInfo());

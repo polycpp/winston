@@ -6,6 +6,7 @@
 #include <polycpp/winston/logger.hpp>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace polycpp {
@@ -32,6 +33,10 @@ public:
     /// @brief Construct with default options applied to loggers created by get().
     /// @param defaults Default LoggerOptions for new loggers.
     explicit Container(LoggerOptions defaults = {});
+
+    // Non-copyable, non-movable (captured 'this' in callbacks would be invalidated)
+    Container(const Container&) = delete;
+    Container& operator=(const Container&) = delete;
 
     /// @brief Get or create a named logger.
     ///
@@ -73,6 +78,7 @@ public:
 private:
     LoggerOptions defaults_;
     std::map<std::string, std::shared_ptr<Logger>> loggers_;
+    mutable std::mutex mutex_;
 };
 
 } // namespace winston
