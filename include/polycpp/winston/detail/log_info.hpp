@@ -8,6 +8,10 @@
 namespace polycpp {
 namespace winston {
 
+// NOTE: Member initialization order matters here. 'level' is declared before
+// 'originalLevel' in the struct, so it is initialized first via move, then
+// 'originalLevel' is copy-initialized from the already-moved-into 'this->level'.
+// Do NOT reorder the member declarations in LogInfo.
 inline LogInfo::LogInfo(std::string level, std::string message)
     : level(std::move(level))
     , originalLevel(this->level)

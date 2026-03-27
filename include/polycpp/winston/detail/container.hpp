@@ -48,6 +48,7 @@ inline std::shared_ptr<Logger> Container::get(const std::string& id,
 
     // Auto-remove on close event
     logger->on("close", [this, id](const std::vector<std::any>&) {
+        std::lock_guard<std::mutex> lock(mutex_);
         loggers_.erase(id);
     });
 

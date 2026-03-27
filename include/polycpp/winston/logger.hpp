@@ -50,7 +50,8 @@ struct LoggerOptions {
     /// Default metadata merged into every log entry.
     JsonObject defaultMeta;
 
-    /// Control behavior on transport errors.
+    /// Exit behavior on uncaught errors. Reserved for future use with ExceptionHandler.
+    /// Currently stored but not enforced -- transport errors are emitted as "error" events.
     /// - true: exit on error (default)
     /// - false: do not exit
     /// - function: custom predicate returning true to exit
@@ -90,8 +91,8 @@ public:
     /// @param options Configuration options.
     explicit Logger(LoggerOptions options = {});
 
-    /// @brief Virtual destructor.
-    virtual ~Logger() = default;
+    /// @brief Destructor. Cleans up transport error listeners to prevent dangling captures.
+    virtual ~Logger();
 
     // --- Core logging ---
 

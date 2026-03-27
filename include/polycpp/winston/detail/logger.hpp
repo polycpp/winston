@@ -25,6 +25,20 @@ inline Logger::Logger(LoggerOptions options)
     }
 }
 
+inline Logger::~Logger() {
+    // Clean up transport error listeners to prevent dangling this captures.
+    // Do not call close() here because it emits "close" event, and emitting
+    // events during destruction is risky (listeners may reference the dying object).
+    for (auto& transport : transports_) {
+        auto it = errorListenerIds_.find(transport.get());
+        if (it != errorListenerIds_.end()) {
+            transport->removeListener("error", it->second);
+        }
+    }
+    errorListenerIds_.clear();
+    transports_.clear();
+}
+
 inline Logger& Logger::log(LogInfo info) {
     // 1. Silent check
     if (silent_) {
@@ -127,11 +141,9 @@ inline Logger& Logger::add(std::shared_ptr<Transport> transport) {
     // Set the transport's level config
     transport->setLevels(&levels_);
 
-    // Wire up error event forwarding (extract the first arg to avoid double-wrapping)
+    // Wire up error event forwarding using emitArgs to avoid double-wrapping std::any
     transport->on("error", [this](const std::vector<std::any>& args) {
-        if (!args.empty()) {
-            this->emit("error", args[0]);
-        }
+        this->emitArgs("error", args);
     });
     auto listenerId = transport->lastListenerId();
     errorListenerIds_[transport.get()] = listenerId;
@@ -325,9 +337,14 @@ inline void Logger::write(LogInfo info) {
         info = std::move(*result);
     }
 
-    // Dispatch to all transports
+    // Dispatch to all transports (isolate failures so one transport doesn't
+    // prevent remaining transports from receiving the message)
     for (auto& transport : transports_) {
-        transport->write(info);
+        try {
+            transport->write(info);
+        } catch (const std::exception& e) {
+            this->emit("error", polycpp::Error(e.what()));
+        }
     }
 }
 
