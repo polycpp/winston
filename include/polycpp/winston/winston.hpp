@@ -14,6 +14,25 @@
 #include <polycpp/winston/level_config.hpp>
 #include <polycpp/winston/format.hpp>
 #include <polycpp/winston/colorizer.hpp>
+
+// Built-in formats (17)
+#include <polycpp/winston/formats/timestamp.hpp>
+#include <polycpp/winston/formats/label.hpp>
+#include <polycpp/winston/formats/ms.hpp>
+#include <polycpp/winston/formats/errors.hpp>
+#include <polycpp/winston/formats/metadata.hpp>
+#include <polycpp/winston/formats/colorize.hpp>
+#include <polycpp/winston/formats/splat.hpp>
+#include <polycpp/winston/formats/align.hpp>
+#include <polycpp/winston/formats/pad_levels.hpp>
+#include <polycpp/winston/formats/uncolorize.hpp>
+#include <polycpp/winston/formats/json.hpp>
+#include <polycpp/winston/formats/simple.hpp>
+#include <polycpp/winston/formats/printf.hpp>
+#include <polycpp/winston/formats/logstash.hpp>
+#include <polycpp/winston/formats/pretty_print.hpp>
+#include <polycpp/winston/formats/cli.hpp>
+
 #include <polycpp/winston/transport.hpp>
 #include <polycpp/winston/logger.hpp>
 #include <polycpp/winston/profiler.hpp>
