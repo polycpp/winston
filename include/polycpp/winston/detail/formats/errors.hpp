@@ -23,7 +23,7 @@ inline std::optional<LogInfo> ErrorsFormat::transform(LogInfo info) {
         return info;
     }
 
-    const auto& errorObj = it->second.asObject();
+    const auto errorObj = it->second.asObject();  // copy to avoid invalidation
 
     // Extract error message if info.message is empty
     auto msgIt = errorObj.find("message");
