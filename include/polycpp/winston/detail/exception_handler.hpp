@@ -30,10 +30,11 @@ inline void ExceptionHandler::handle(
 
     // Install the process exception handler
     polycpp::process::on("uncaughtException",
-        [this](const std::exception& err) {
-            LogInfo info = getAllInfo(err);
-            logger_.log(std::move(info));
-        });
+        std::function<void(const std::exception&, const std::string&)>(
+            [this](const std::exception& err, const std::string& /*origin*/) {
+                LogInfo info = getAllInfo(err);
+                logger_.log(std::move(info));
+            }));
 
     installed_ = true;
 }
