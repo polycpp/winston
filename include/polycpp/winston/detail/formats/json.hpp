@@ -4,7 +4,7 @@
 /// @brief Inline implementation for JsonFormat.
 
 #include <polycpp/winston/formats/json.hpp>
-#include <polycpp/core/json.hpp>
+#include <polycpp/winston/detail/formats/stringify_util.hpp>
 
 namespace polycpp {
 namespace winston {
@@ -15,6 +15,8 @@ inline JsonFormat::JsonFormat(JsonFormatOptions options)
 
 inline std::optional<LogInfo> JsonFormat::transform(LogInfo info) {
     auto jv = info.toJsonValue();
+    // Sort keys alphabetically to match npm safe-stable-stringify behavior
+    jv = detail::sortJsonKeys(jv);
     info.formattedMessage = polycpp::JSON::stringify(jv, opts_.space);
     return info;
 }

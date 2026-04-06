@@ -43,9 +43,9 @@ inline std::optional<LogInfo> MetadataFormat::transform(LogInfo info) {
     }
 
     info.metadata = std::move(remaining);
-    if (!nested.empty()) {
-        info.metadata[opts_.key] = JsonValue(std::move(nested));
-    }
+    // Always set the metadata key — use empty object {} when no metadata fields
+    // exist, matching npm behavior (never null).
+    info.metadata[opts_.key] = JsonValue(std::move(nested));
 
     return info;
 }

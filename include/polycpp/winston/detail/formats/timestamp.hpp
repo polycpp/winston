@@ -25,6 +25,11 @@ inline std::optional<LogInfo> TimestampFormat::transform(LogInfo info) {
 
     if (opts_.fn) {
         ts = opts_.fn();
+        // If custom function returns empty string, fall back to ISO timestamp
+        // (matches npm behavior where empty function result uses Date.toISOString)
+        if (ts.empty()) {
+            ts = polycpp::Date(polycpp::Date::now()).toISOString();
+        }
     }
 #if POLYCPP_WINSTON_HAS_MOMENT
     else if (!opts_.format.empty()) {

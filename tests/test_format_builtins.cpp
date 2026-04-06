@@ -225,14 +225,16 @@ TEST(MetadataFormatTest, FillWithMovesOnlySpecifiedKeys) {
     EXPECT_FALSE(nested.count("service"));
 }
 
-TEST(MetadataFormatTest, EmptyMetadataNoNestedKey) {
+TEST(MetadataFormatTest, EmptyMetadataEmptyObject) {
     auto fmt = metadata();
     auto info = makeInfo("info", "hello");
 
     auto result = fmt->transform(info);
     ASSERT_TRUE(result.has_value());
-    // No nested key when metadata is empty
-    EXPECT_FALSE(result->metadata.count("metadata"));
+    // Empty metadata still creates the nested key with empty object (matches npm)
+    EXPECT_TRUE(result->metadata.count("metadata"));
+    EXPECT_TRUE(result->metadata.at("metadata").isObject());
+    EXPECT_TRUE(result->metadata.at("metadata").asObject().empty());
 }
 
 // ============================================================

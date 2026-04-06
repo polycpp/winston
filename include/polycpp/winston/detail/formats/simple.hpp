@@ -4,7 +4,7 @@
 /// @brief Inline implementation for SimpleFormat.
 
 #include <polycpp/winston/formats/simple.hpp>
-#include <polycpp/core/json.hpp>
+#include <polycpp/winston/detail/formats/stringify_util.hpp>
 
 namespace polycpp {
 namespace winston {
@@ -15,7 +15,9 @@ inline SimpleFormat::SimpleFormat() {}
 inline std::optional<LogInfo> SimpleFormat::transform(LogInfo info) {
     std::string result = info.level + ": " + info.message;
     if (!info.metadata.empty()) {
-        result += " " + polycpp::JSON::stringify(JsonValue(info.metadata));
+        // Sort keys alphabetically to match npm safe-stable-stringify behavior
+        auto sorted = detail::sortJsonKeys(JsonValue(info.metadata));
+        result += " " + polycpp::JSON::stringify(sorted);
     }
     info.formattedMessage = std::move(result);
     return info;
