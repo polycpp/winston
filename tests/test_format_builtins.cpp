@@ -72,7 +72,7 @@ TEST(TimestampFormatTest, CustomAlias) {
 // ============================================================
 
 TEST(LabelFormatTest, AddsLabelToMetadata) {
-    auto fmt = label({.label = "my-app"});
+    auto fmt = formats::label({.label = "my-app"});
     auto info = makeInfo("info", "hello");
     auto result = fmt->transform(info);
     ASSERT_TRUE(result.has_value());
@@ -80,7 +80,7 @@ TEST(LabelFormatTest, AddsLabelToMetadata) {
 }
 
 TEST(LabelFormatTest, MessageModePrependsToMessage) {
-    auto fmt = label({.label = "my-app", .message = true});
+    auto fmt = formats::label({.label = "my-app", .message = true});
     auto info = makeInfo("info", "hello");
     auto result = fmt->transform(info);
     ASSERT_TRUE(result.has_value());
@@ -687,7 +687,7 @@ TEST(FormatPipelineTest, TimestampThenJsonPipeline) {
 
 TEST(FormatPipelineTest, LabelTimestampSimplePipeline) {
     auto fmt = combine({
-        label({.label = "my-app"}),
+        formats::label({.label = "my-app"}),
         timestamp({.fn = []{ return "2026-03-26T12:00:00.000Z"; }}),
         simple()
     });
