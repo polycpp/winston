@@ -6,6 +6,7 @@
 #include <polycpp/winston/log_info.hpp>
 #include <polycpp/winston/format.hpp>
 #include <polycpp/winston/level_config.hpp>
+#include <polycpp/winston/events.hpp>
 #include <polycpp/events.hpp>
 #include <memory>
 #include <optional>

@@ -113,7 +113,7 @@ TEST(StreamTransportTest, EmitsLoggedEvent) {
     auto transport = std::make_shared<StreamTransport>(opts);
 
     bool loggedFired = false;
-    transport->on("logged", [&loggedFired](const std::vector<std::any>&) {
+    transport->on(event::Logged, [&loggedFired]() {
         loggedFired = true;
     });
 

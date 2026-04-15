@@ -210,7 +210,7 @@ TEST(ConsoleTransportTest, EmitsLoggedEvent) {
     ConsoleTransport transport(opts, out, err);
 
     int loggedCount = 0;
-    transport.on("logged", [&loggedCount](const std::vector<std::any>&) {
+    transport.on(event::Logged, [&loggedCount]() {
         loggedCount++;
     });
 

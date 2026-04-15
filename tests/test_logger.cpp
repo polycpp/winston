@@ -295,7 +295,7 @@ TEST(LoggerTest, CloseEmitsEvent) {
     });
 
     bool closeFired = false;
-    logger.on("close", [&closeFired](const std::vector<std::any>&) {
+    logger.on(event::Close, [&closeFired]() {
         closeFired = true;
     });
 
@@ -636,12 +636,12 @@ TEST(LoggerTest, ErrorEventFromTransport) {
     });
 
     bool errorFired = false;
-    logger.on("error", [&errorFired](const std::vector<std::any>& args) {
+    logger.on(event::Error_, [&errorFired](const polycpp::Error&) {
         errorFired = true;
     });
 
     // Transport emits an error
-    transport->emit("error", std::string("transport failure"));
+    transport->emit(event::Error_, polycpp::Error("transport failure"));
     EXPECT_TRUE(errorFired);
 }
 

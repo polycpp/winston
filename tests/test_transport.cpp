@@ -155,7 +155,7 @@ TEST(TransportTest, PerTransportFormatCanFilter) {
 TEST(TransportTest, EmitsLoggedEvent) {
     auto transport = std::make_shared<MockTransport>();
     int loggedCount = 0;
-    transport->on("logged", [&loggedCount](const std::vector<std::any>&) {
+    transport->on(event::Logged, [&loggedCount]() {
         loggedCount++;
     });
 
@@ -171,7 +171,7 @@ TEST(TransportTest, SilentDoesNotEmitLoggedEvent) {
     opts.silent = true;
     auto transport = std::make_shared<MockTransport>(opts);
     int loggedCount = 0;
-    transport->on("logged", [&loggedCount](const std::vector<std::any>&) {
+    transport->on(event::Logged, [&loggedCount]() {
         loggedCount++;
     });
 
@@ -187,7 +187,7 @@ TEST(TransportTest, FilteredDoesNotEmitLoggedEvent) {
     transport->setLevels(&config);
 
     int loggedCount = 0;
-    transport->on("logged", [&loggedCount](const std::vector<std::any>&) {
+    transport->on(event::Logged, [&loggedCount]() {
         loggedCount++;
     });
 

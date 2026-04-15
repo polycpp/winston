@@ -7,6 +7,7 @@
 #include <polycpp/winston/format.hpp>
 #include <polycpp/winston/transport.hpp>
 #include <polycpp/winston/level_config.hpp>
+#include <polycpp/winston/events.hpp>
 #include <polycpp/events.hpp>
 #include <polycpp/core/json.hpp>
 #include <polycpp/core/error.hpp>

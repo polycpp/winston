@@ -56,7 +56,7 @@ inline void Transport::write(LogInfo info) {
     log(info);
 
     // Emit "logged" event
-    emit("logged");
+    emit(event::Logged);
 }
 
 } // namespace winston

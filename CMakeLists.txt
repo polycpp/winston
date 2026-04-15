@@ -9,13 +9,21 @@ include(FetchContent)
 
 # Fetch polycpp (disable its tests when building as a dependency)
 set(POLYCPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(POLYCPP_SOURCE_DIR "" CACHE PATH "Path to a local polycpp checkout")
 
-FetchContent_Declare(
-    polycpp
-    GIT_REPOSITORY git@github.com:enricohuang/polycpp.git
-    GIT_TAG        master
-    GIT_SHALLOW    TRUE
-)
+if(POLYCPP_SOURCE_DIR)
+    FetchContent_Declare(
+        polycpp
+        SOURCE_DIR ${POLYCPP_SOURCE_DIR}
+    )
+else()
+    FetchContent_Declare(
+        polycpp
+        GIT_REPOSITORY https://github.com/enricohuang/polycpp.git
+        GIT_TAG        master
+        GIT_SHALLOW    TRUE
+    )
+endif()
 FetchContent_MakeAvailable(polycpp)
 
 # Library target
@@ -37,7 +45,7 @@ if(POLYCPP_WINSTON_BUILD_TESTS)
     enable_testing()
     FetchContent_Declare(
         googletest
-        GIT_REPOSITORY git@github.com:google/googletest.git
+        GIT_REPOSITORY https://github.com/google/googletest.git
         GIT_TAG        v1.15.2
     )
     FetchContent_MakeAvailable(googletest)

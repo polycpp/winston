@@ -47,7 +47,7 @@ inline std::shared_ptr<Logger> Container::get(const std::string& id,
     auto logger = std::make_shared<Logger>(std::move(merged));
 
     // Auto-remove on close event
-    logger->on("close", [this, id](const std::vector<std::any>&) {
+    logger->on(event::Close, [this, id]() {
         std::lock_guard<std::mutex> lock(mutex_);
         loggers_.erase(id);
     });

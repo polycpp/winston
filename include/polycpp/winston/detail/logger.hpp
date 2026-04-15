@@ -32,7 +32,7 @@ inline Logger::~Logger() {
     for (auto& transport : transports_) {
         auto it = errorListenerIds_.find(transport.get());
         if (it != errorListenerIds_.end()) {
-            transport->removeListener("error", it->second);
+            transport->off(it->second);
         }
     }
     errorListenerIds_.clear();
@@ -141,11 +141,9 @@ inline Logger& Logger::add(std::shared_ptr<Transport> transport) {
     // Set the transport's level config
     transport->setLevels(&levels_);
 
-    // Wire up error event forwarding using emitArgs to avoid double-wrapping std::any
-    transport->on("error", [this](const std::vector<std::any>& args) {
-        this->emitArgs("error", args);
+    auto listenerId = transport->on(event::Error_, [this](const polycpp::Error& error) {
+        this->emit(event::Error_, error);
     });
-    auto listenerId = transport->lastListenerId();
     errorListenerIds_[transport.get()] = listenerId;
 
     transports_.push_back(std::move(transport));
@@ -156,7 +154,7 @@ inline Logger& Logger::remove(std::shared_ptr<Transport> transport) {
     // Remove event forwarding listener
     auto it = errorListenerIds_.find(transport.get());
     if (it != errorListenerIds_.end()) {
-        transport->removeListener("error", it->second);
+        transport->off(it->second);
         errorListenerIds_.erase(it);
     }
 
@@ -173,7 +171,7 @@ inline Logger& Logger::clear() {
     for (auto& transport : transports_) {
         auto it = errorListenerIds_.find(transport.get());
         if (it != errorListenerIds_.end()) {
-            transport->removeListener("error", it->second);
+            transport->off(it->second);
         }
     }
     errorListenerIds_.clear();
@@ -183,7 +181,7 @@ inline Logger& Logger::clear() {
 
 inline void Logger::close() {
     clear();
-    emit("close");
+    emit(event::Close);
 }
 
 // --- Configuration ---
@@ -343,7 +341,7 @@ inline void Logger::write(LogInfo info) {
         try {
             transport->write(info);
         } catch (const std::exception& e) {
-            this->emit("error", polycpp::Error(e.what()));
+            this->emit(event::Error_, polycpp::Error(e.what()));
         }
     }
 }

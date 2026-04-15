@@ -31,6 +31,12 @@ cmake --build build -j$(nproc)
 cd build && ctest --output-on-failure
 ```
 
+To test against a local `polycpp` checkout instead of fetching `master`:
+
+```bash
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DPOLYCPP_SOURCE_DIR=/path/to/polycpp
+```
+
 ## Usage
 
 ```cpp
