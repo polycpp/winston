@@ -45,7 +45,7 @@ struct TransportOptions {
 /// - "warn"   -- emitted for non-fatal transport warnings
 ///
 /// @see https://github.com/winstonjs/winston-transport
-class Transport : public polycpp::EventEmitter {
+class Transport : public polycpp::events::EventEmitter {
 public:
     virtual ~Transport() = default;
 

@@ -86,7 +86,7 @@ struct LoggerOptions {
 /// ```
 ///
 /// @see https://github.com/winstonjs/winston#creating-your-own-logger
-class Logger : public polycpp::EventEmitter {
+class Logger : public polycpp::events::EventEmitter {
 public:
     /// @brief Construct a Logger with the given options.
     /// @param options Configuration options.

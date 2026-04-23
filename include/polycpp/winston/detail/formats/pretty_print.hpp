@@ -15,7 +15,10 @@ inline PrettyPrintFormat::PrettyPrintFormat(PrettyPrintOptions options)
 
 inline std::optional<LogInfo> PrettyPrintFormat::transform(LogInfo info) {
     auto jv = info.toJsonValue();
-    info.formattedMessage = polycpp::util::inspect(jv, false, opts_.depth, opts_.colorize);
+    polycpp::util::InspectOptions inspectOpts;
+    inspectOpts.depth = opts_.depth;
+    inspectOpts.colors = opts_.colorize;
+    info.formattedMessage = polycpp::util::inspect(jv, inspectOpts);
     return info;
 }
 

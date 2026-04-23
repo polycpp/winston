@@ -93,7 +93,7 @@ inline JsonObject ExceptionHandler::getProcessInfo() {
 
     // Memory usage
     auto mem = polycpp::process::memoryUsage();
-    proc["memoryUsage"] = mem;
+    proc["memoryUsage"] = mem.toJSON();
 
     return proc;
 }
